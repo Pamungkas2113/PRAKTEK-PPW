@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Toko Sepatu Online</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .catalog {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 8px;
+      width: 250px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    .product h3 {
+      margin: 10px 0;
+    }
+
+    .product p {
+      margin: 0 0 10px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button, a.detail-link {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .btn-buy {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-detail {
+      background: #3498db;
+      color: white;
+    }
+
+    #form-container,
+    #checkout-msg {
+      display: none;
+      background: white;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #checkout-msg p {
+      margin-bottom: 10px;
+    }
+
+    #receipt {
+      margin-top: 20px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+
+    #receipt h4 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>KATALOG - SEPATU</h1>
+</header>
+
+<div class="catalog">
+  <div class="product" data-name="CONVERSE X KENZO CHUCK 70" data-price="1899000">
+    <img src="2.jpg" alt="Sneakers X">
+    <h3>CONVERSE X KENZO CHUCK 70</h3>
+    <p>Harga: Rp 1.899.000</p>
+    <div class="buttons">
+      <a href="https://id.puma.com/in/pd/sepatu-speedcat-og-unisex-sneakers/398846.html" class="detail-link btn-detail" target="_blank">Detail</a>
+      <button class="btn-buy" onclick="showForm(this)">Beli</button>
+    </div>
+  </div>
+
+  <div class="product" data-name="JORDAN AIR 1 LOW" data-price="1210300">
+    <img src="3.jpg" alt="Sneakers X">
+    <h3>JORDAN AIR 1 LOW</h3>
+    <p>Harga: Rp 1.210.300</p>
+    <div class="buttons">
+      <a href="https://jdsports.id/product/jordan-air-1-low-553558-132" class="detail-link btn-detail" target="_blank">Detail</a>
+      <button class="btn-buy" onclick="showForm(this)">Beli</button>
+    </div>
+  </div>
+
+  <div class="product" data-name="PUMA SPEEDCAT OG UNISEX" data-price="2299000">
+    <img src="1.jpg" alt="Running Z">
+    <h3>PUMA SPEEDCAT OG UNISEX</h3>
+    <p>Harga: Rp 2.299.000</p>
+    <div class="buttons">
+      <a href="https://www.converse.id/converse-x-kenzo-chuck-70-hi-women-sweet-corn-solar-power.html" class="detail-link btn-detail" target="_blank">Detail</a>
+      <button class="btn-buy" onclick="showForm(this)">Beli</button>
+    </div>
+  </div>
+</div>
+
+<div id="form-container">
+  <h2>Form Pembelian</h2>
+  <form onsubmit="return checkout()">
+    <input type="hidden" id="form-product-name">
+    <input type="hidden" id="form-product-price">
+    <p>Produk: <span id="product-name-display"></span></p>
+    <p>Harga: <span id="product-price-display"></span></p>
+    <label>Nama:<br><input type="text" id="buyer-name" required></label><br><br>
+    <label>Alamat:<br><textarea id="buyer-address" required></textarea></label><br><br>
+    <label>Jumlah:<br><input type="number" id="buyer-qty" min="1" value="1" required></label><br><br>
+    <button type="submit" class="btn-buy">Checkout</button>
+  </form>
+</div>
+
+<div id="checkout-msg">
+  <h3>Terima kasih telah membeli!</h3>
+  <p>Pesanan Anda sedang diproses.</p>
+  <div id="receipt">
+    <h4>Struk Pembelian:</h4>
+    <p><strong>Produk:</strong> <span id="receipt-product"></span></p>
+    <p><strong>Harga Satuan:</strong> <span id="receipt-price"></span></p>
+    <p><strong>Jumlah:</strong> <span id="receipt-qty"></span></p>
+    <p><strong>Total:</strong> <span id="receipt-total"></span></p>
+    <p><strong>Nama Pembeli:</strong> <span id="receipt-name"></span></p>
+    <p><strong>Alamat:</strong> <span id="receipt-address"></span></p>
+  </div>
+</div>
+
+<script>
+  function showForm(btn) {
+    const product = btn.closest('.product');
+    const name = product.dataset.name;
+    const price = product.dataset.price;
+    
+    document.getElementById('form-product-name').value = name;
+    document.getElementById('form-product-price').value = price;
+
+    document.getElementById('product-name-display').textContent = name;
+    document.getElementById('product-price-display').textContent = "Rp " + Number(price).toLocaleString("id-ID");
+
+    document.getElementById('form-container').style.display = 'block';
+    document.getElementById('checkout-msg').style.display = 'none';
+  }
+
+  function checkout() {
+    const productName = document.getElementById('form-product-name').value;
+    const productPrice = Number(document.getElementById('form-product-price').value);
+    const qty = Number(document.getElementById('buyer-qty').value);
+    const buyerName = document.getElementById('buyer-name').value;
+    const buyerAddress = document.getElementById('buyer-address').value;
+
+    if (buyerName && buyerAddress && qty > 0) {
+      const total = productPrice * qty;
+
+      document.getElementById('receipt-product').textContent = productName;
+      document.getElementById('receipt-price').textContent = "Rp " + productPrice.toLocaleString("id-ID");
+      document.getElementById('receipt-qty').textContent = qty;
+      document.getElementById('receipt-total').textContent = "Rp " + total.toLocaleString("id-ID");
+      document.getElementById('receipt-name').textContent = buyerName;
+      document.getElementById('receipt-address').textContent = buyerAddress;
+
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('checkout-msg').style.display = 'block';
+    }
+
+    return false;
+  }
+</script>
+
+</body>
+</html>
